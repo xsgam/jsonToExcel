@@ -32,3 +32,10 @@ update for support  jsonObject in jsonObject:
     }
 ]
 ```
+
+output csv:
+```
+A,B,c,d1,d2
+"001","TEST1",("11" "12"|"13" "14"),"101","102"
+"002","TEST2",("22" "23"|"24" "25"),"201","202"
+```
