@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -15,6 +15,43 @@ function cloneAndConvert(){
     JSONToCSVConvertor(filteredGridData, "UserReport.csv", true);
 }
 
+function getJsonHeader(JSONData)
+{
+	var row_sub = '';
+	
+	for (var index in JSONData) {
+	
+		row_sub += index + ',';
+    }
+	return row_sub;
+}
+
+function getJsonValue(JSONData,spc)
+{
+	var row_sub = '';
+	
+	if(JSONData.length > 0)
+	{
+		//array 
+		row_sub = '(';
+		for (var i = 0; i < JSONData.length; i++) {
+			row_sub += getJsonValue(JSONData[i],' ') + ' ';
+		}
+		
+		row_sub += ') ';
+	}
+	else
+	{
+		//object		
+		for (var index in JSONData) {
+			row_sub += '"' + JSONData[index] + '"'+spc;
+		}
+	}
+	
+	
+	return row_sub;
+}
+
 function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {		
 
     //If JSONData is not an object then JSON.parse will parse the JSON string in an Object
@@ -26,8 +63,22 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
         
         //This loop will extract the label from 1st index of on array
         for (var index in arrData[0]) {
-            //Now convert each value to string and comma-seprated
-            row += index + ',';
+		
+			var jd = arrData[0][index];
+			if(typeof jd != 'object')
+		
+				//Now convert each value to string and comma-seprated
+				row += index + ',';
+			else
+			{
+				if(jd.length > 0)
+				{
+					row += index + ',';
+				}
+				else
+					row += getJsonHeader(jd);
+			}
+				
         }
         row = row.slice(0, -1);
         //append Label row with line break
@@ -39,7 +90,16 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
         var row = "";
         //2nd loop will extract each column and convert it in string comma-seprated
         for (var index in arrData[i]) {
-            row += '"' + arrData[i][index] + '",';
+		
+			var jd = arrData[i][index];
+			if(typeof jd != 'object')
+			{
+				row += '"' + arrData[i][index] + '",';
+			}				
+			else
+			{
+				row += getJsonValue(jd,',');
+			}
         }
         row.slice(0, row.length - 1);
         //add a line break after each row
@@ -81,7 +141,7 @@ function JSONToCSVConvertor(JSONData, ReportTitle, ShowLabel) {
 		<textarea id="txtJson" rows="40" cols="150"></textarea>
 	</div>
 	<div>
-		<input type="Button" id="btnConvert" value="导出csv"  onclick="cloneAndConvert()"/ >
+		<input type="Button" id="btnConvert" value="export csv"  onclick="cloneAndConvert()"/ >
 	</div>
 </body>
 </html>
