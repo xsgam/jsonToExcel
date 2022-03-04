@@ -35,10 +35,11 @@ function getJsonValue(JSONData,spc)
 		//array 
 		row_sub = '(';
 		for (var i = 0; i < JSONData.length; i++) {
-			row_sub += getJsonValue(JSONData[i],' ') + ' ';
+			row_sub += getJsonValue(JSONData[i],' ') + '|';
 		}
+		row_sub = row_sub.slice(0, -1);
 		
-		row_sub += ') ';
+		row_sub += ')'+spc;
 	}
 	else
 	{
@@ -46,6 +47,8 @@ function getJsonValue(JSONData,spc)
 		for (var index in JSONData) {
 			row_sub += '"' + JSONData[index] + '"'+spc;
 		}
+		
+		row_sub = row_sub.slice(0, -1);
 	}
 	
 	
